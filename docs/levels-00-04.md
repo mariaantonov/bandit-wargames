@@ -117,3 +117,30 @@ grep "millionth" data.txt
 Core Concepts Learned:
 1. Text Pattern Matching (grep): Global Regular Expression Print parses large text streams line-by-line to match specific substrings without flooding the terminal buffer.
 2. Handling Bulk Data Logs: Avoids opening multi-megabyte log dumps manually with cat or less by isolating targeted records at the command line.
+
+---
+
+## Level 8 to Level 9: Stream Sorting & Unique Frequency Analysis (sort | uniq)
+
+Objective: Retrieve the password stored in data.txt, which is the only line of text that occurs exactly once among hundreds of repeated entries.
+
+Commands:
+sort data.txt | uniq -u
+
+Core Concepts Learned:
+1. Stream Sorting (sort): The uniq utility operates solely on adjacent duplicate lines. Unsorted streams with identical records separated across lines bypass detection; piping through sort ensures all identical records cluster into contiguous blocks.
+2. Unique Filtering (uniq -u): While standard uniq collapses adjacent duplicates, the -u flag filters out any line with a frequency greater than 1, extracting the single non-repeating record.
+3. Unix Pipeline Architecture (|): Streams stdout from sort directly into the stdin buffer of uniq in-memory without generating intermediate temporary files.
+
+---
+
+## Level 9 to Level 10: Extracting Printable Human-Readable Strings (strings)
+
+Objective: Retrieve the password hidden inside the binary data file data.txt, preceded by several '=' characters.
+
+Commands:
+strings data.txt | grep "==="
+
+Core Concepts Learned:
+1. Binary Stream Parsing (strings): Inspecting raw binary, compiled objects, or corrupted data with cat dumps non-printable control characters that can corrupt terminal emulators. The strings utility filters out unprintable bytes and extracts contiguous sequences of printable ASCII/UTF-8 characters (default minimum length of 4).
+2. Pattern Filtering on Binary Artifacts (strings | grep): Combines extraction of printable text with regex filtering to isolate specific key-value pairs or flag delimiters from compiled structures, core dumps, or proprietary binary formats.
