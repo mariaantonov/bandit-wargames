@@ -144,3 +144,17 @@ strings data.txt | grep "==="
 Core Concepts Learned:
 1. Binary Stream Parsing (strings): Inspecting raw binary, compiled objects, or corrupted data with cat dumps non-printable control characters that can corrupt terminal emulators. The strings utility filters out unprintable bytes and extracts contiguous sequences of printable ASCII/UTF-8 characters (default minimum length of 4).
 2. Pattern Filtering on Binary Artifacts (strings | grep): Combines extraction of printable text with regex filtering to isolate specific key-value pairs or flag delimiters from compiled structures, core dumps, or proprietary binary formats.
+
+---
+
+## Level 10 to Level 11: Base64 Stream Decoding (base64 -d)
+
+Objective: Retrieve the password stored in data.txt, which contains base64 encoded data.
+
+Commands:
+base64 -d data.txt
+
+Core Concepts Learned:
+1. Data Representation vs. Encryption: Base64 is an encoding scheme designed to safely transport binary data across 7-bit ASCII transmission channels, not a mechanism for confidentiality. It provides zero cryptographic security.
+2. Radix-64 Translation: The algorithm transforms groups of 24 bits (3 bytes) into four 6-bit index values mapped against a 64-character alphabet, padding unaligned input blocks with '=' symbols.
+3. Command-Line Stream Decoding: The -d (--decode) switch reverses the representation transform, converting the ASCII stream back into raw plaintext bytes on standard output.
