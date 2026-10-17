@@ -172,3 +172,28 @@ Core Concepts Learned:
 1. Stream Translation Primitives (tr): The translate utility reads standard input, mapping each character from a defined source set (SET1) to the corresponding positional character in a destination set (SET2) before emitting bytes to standard output.
 2. ROT13 Reversibility: Because standard Latin alphabet ranges contain 26 letters, shifting indices by 13 positions creates an involutory cipher ($13 + 13 = 26 \equiv 0 \pmod{26}$). Applying the identical transformation a second time decodes the ciphertext without separate decryption logic.
 3. Input Stream Redirection (<): Directs file contents from data.txt straight into tr's standard input descriptor (stdin / 0), bypassing unnecessary intermediate utilities like cat.
+
+---
+
+## Level 12 to Level 13: Binary Hex Reversal & Nested Archive Carving (xxd, file, tar, gzip, bzip2)
+
+Objective: Extract the password hidden within a repeatedly compressed hex dump in data.txt.
+
+Commands:
+# In temporary directory /tmp/bandit12_work:
+xxd -r data.txt decompressed_data
+file decompressed_data
+
+# Iteratively unpack based on signature detection:
+mv decompressed_data file.gz && gunzip file.gz
+file file
+mv file file.bz2 && bunzip2 file.bz2
+file file
+tar -xf file
+# Repeat until final ASCII text key is surfaced
+cat <final_extracted_file>
+
+Core Concepts Learned:
+1. Reversing Hexadecimal Dumps (xxd -r): The -r (revert) flag parses ASCII hexadecimal representation strings back into their original binary stream format.
+2. File Header Magic Signatures (file): File extensions on Unix are arbitrary metadata conventions. Tools like file parse binary magic bytes (e.g., 0x1F8B for Gzip, 0x425A for Bzip2, 0x7573746172 for POSIX tar) to determine true file formats.
+3. Multi-Layer Archive Carving: Teaches defensive payload analysis and unpack routines common in malware triage, where nested compression is used to evade basic string scanners.
