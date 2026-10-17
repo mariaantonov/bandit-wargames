@@ -158,3 +158,17 @@ Core Concepts Learned:
 1. Data Representation vs. Encryption: Base64 is an encoding scheme designed to safely transport binary data across 7-bit ASCII transmission channels, not a mechanism for confidentiality. It provides zero cryptographic security.
 2. Radix-64 Translation: The algorithm transforms groups of 24 bits (3 bytes) into four 6-bit index values mapped against a 64-character alphabet, padding unaligned input blocks with '=' symbols.
 3. Command-Line Stream Decoding: The -d (--decode) switch reverses the representation transform, converting the ASCII stream back into raw plaintext bytes on standard output.
+
+---
+
+## Level 11 to Level 12: Stream Character Translation & Substitution Ciphers (tr / ROT13)
+
+Objective: Retrieve the password stored in data.txt, where all lowercase and uppercase letters have been rotated by 13 positions (ROT13 Caesar cipher).
+
+Commands:
+tr 'A-Za-z' 'N-ZA-Mn-za-m' < data.txt
+
+Core Concepts Learned:
+1. Stream Translation Primitives (tr): The translate utility reads standard input, mapping each character from a defined source set (SET1) to the corresponding positional character in a destination set (SET2) before emitting bytes to standard output.
+2. ROT13 Reversibility: Because standard Latin alphabet ranges contain 26 letters, shifting indices by 13 positions creates an involutory cipher ($13 + 13 = 26 \equiv 0 \pmod{26}$). Applying the identical transformation a second time decodes the ciphertext without separate decryption logic.
+3. Input Stream Redirection (<): Directs file contents from data.txt straight into tr's standard input descriptor (stdin / 0), bypassing unnecessary intermediate utilities like cat.
