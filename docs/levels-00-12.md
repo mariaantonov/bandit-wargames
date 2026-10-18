@@ -197,3 +197,24 @@ Core Concepts Learned:
 1. Reversing Hexadecimal Dumps (xxd -r): The -r (revert) flag parses ASCII hexadecimal representation strings back into their original binary stream format.
 2. File Header Magic Signatures (file): File extensions on Unix are arbitrary metadata conventions. Tools like file parse binary magic bytes (e.g., 0x1F8B for Gzip, 0x425A for Bzip2, 0x7573746172 for POSIX tar) to determine true file formats.
 3. Multi-Layer Archive Carving: Teaches defensive payload analysis and unpack routines common in malware triage, where nested compression is used to evade basic string scanners.
+
+---
+
+## Level 13 to Level 14: SSH Private Key Authentication & Key Permissions (ssh -i)
+
+Objective: Retrieve the password for Bandit Level 14 using the private SSH key stored in `sshkey.private` on `localhost`.
+
+Commands:
+# Verify restrictive permissions (required by OpenSSH client):
+chmod 600 sshkey.private
+
+# Authenticate locally to Level 14 via loopback:
+ssh -i sshkey.private bandit14@localhost -p 2220
+
+# Retrieve password from standard system location:
+cat /etc/bandit_pass/bandit14
+
+Core Concepts Learned:
+1. Public-Key Authentication (`ssh -i`): Replaces password-based authentication with asymmetric key pairs. The `-i` (identity file) flag instructs the OpenSSH client to sign challenge data using the private key matching the public key registered in `~/.ssh/authorized_keys`.
+2. OpenSSH Client Key Permission Checks: SSH clients enforce strict filesystem permission boundaries on private keys. If a key file has group or world-readable permissions (e.g., `chmod 644` or `777`), the OpenSSH client rejects it with `WARNING: UNPROTECTED PRIVATE KEY FILE!`. A permission state of `chmod 600` (read/write only by owner) is mandatory.
+3. Loopback Connection (`localhost` / `127.0.0.1`): Demonstrates establishing network and port connections entirely within the internal system loopback interface without external internet exposure.
