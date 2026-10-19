@@ -218,3 +218,21 @@ Core Concepts Learned:
 1. Public-Key Authentication (`ssh -i`): Replaces password-based authentication with asymmetric key pairs. The `-i` (identity file) flag instructs the OpenSSH client to sign challenge data using the private key matching the public key registered in `~/.ssh/authorized_keys`.
 2. OpenSSH Client Key Permission Checks: SSH clients enforce strict filesystem permission boundaries on private keys. If a key file has group or world-readable permissions (e.g., `chmod 644` or `777`), the OpenSSH client rejects it with `WARNING: UNPROTECTED PRIVATE KEY FILE!`. A permission state of `chmod 600` (read/write only by owner) is mandatory.
 3. Loopback Connection (`localhost` / `127.0.0.1`): Demonstrates establishing network and port connections entirely within the internal system loopback interface without external internet exposure.
+
+---
+
+## Level 14 to Level 15: Network Socket Communication & Port Submission (nc)
+
+Objective: Submit the current level's password to a daemon listening on `localhost` port `30000` to receive the password for Bandit Level 15.
+
+Commands:
+# Interactive submission via Netcat:
+nc localhost 30000
+
+# Alternative single-line pipeline submission:
+cat /etc/bandit_pass/bandit14 | nc localhost 30000
+
+Core Concepts Learned:
+1. TCP Socket Probing (`nc` / Netcat): Dubbed the "Swiss Army knife of networking," Netcat establishes arbitrary TCP/UDP connections and binds them directly to standard input and standard output streams (`stdin`/`stdout`).
+2. Client-Server Interaction Model: Demonstrates programmatic service consumption. The server daemon on port 30000 listens for an incoming connection, evaluates incoming stream data against an expected credential format, and returns the next authentication token upon validation.
+3. Pipeline Data Streaming: Combining `cat` with `| nc` eliminates manual keystroke delays, piping file contents directly into the established network transport layer.
