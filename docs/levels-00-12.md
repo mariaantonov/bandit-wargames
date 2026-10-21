@@ -254,3 +254,32 @@ Core Concepts Learned:
 1. Transport Layer Security (TLS/SSL): Cleartext TCP utilities like Netcat fail when interacting with endpoints requiring cryptographic handshakes, cipher-suite negotiation, and certificate exchange.
 2. OpenSSL Diagnostic Client (`openssl s_client`): A diagnostic tool for establishing raw encrypted streams to arbitrary TLS-wrapped network services.
 3. Suppressing Handshake Overhead (`-quiet`): The `-quiet` switch silences certificate verification details, session parameters, and TLS handshake output, piping standard input and output cleanly across the encrypted tunnel.
+
+---
+
+## Level 16 to Level 17: Local Port Scanning & Service Fingerprinting (nmap / openssl)
+
+Objective: Identify which service listening on ports `31000-32000` on `localhost` speaks SSL/TLS, submit the credentials for Bandit 16, and use the returned RSA private key to access Bandit Level 17.
+
+Commands:
+# 1. Scan the targeted port range on loopback:
+nmap -p 31000-32000 localhost
+
+# 2. Probe service versions to isolate the SSL/TLS listener:
+nmap -sV -p 31000-32000 localhost
+
+# 3. Connect to the validated TLS daemon and submit credentials:
+openssl s_client -quiet -connect localhost:<TARGET_PORT>
+
+# 4. Save returned private key, lock permissions, and authenticate:
+mkdir -p /tmp/b16_recon && cd /tmp/b16_recon
+cat > bandit17.key << 'EOF'
+[RSA Private Key]
+EOF
+chmod 600 bandit17.key
+ssh -i bandit17.key bandit17@localhost -p 2220
+
+Core Concepts Learned:
+1. Port Range Scanning (`nmap -p`): Demonstrates targeted reconnaissance across a closed port window on the loopback interface (`127.0.0.1`), locating listening sockets without scanning all 65,535 ports.
+2. Service Fingerprinting (`nmap -sV`): Differentiates simple dummy or echo listeners from daemons expecting structured TLS handshakes.
+3. Keyfile Lifecycle & Permission Boundaries: Reinforces the OpenSSH requirement for strict identity key permissions (`chmod 600`) before allowing programmatic asymmetric key exchange.
