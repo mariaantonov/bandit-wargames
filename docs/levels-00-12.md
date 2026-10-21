@@ -236,3 +236,21 @@ Core Concepts Learned:
 1. TCP Socket Probing (`nc` / Netcat): Dubbed the "Swiss Army knife of networking," Netcat establishes arbitrary TCP/UDP connections and binds them directly to standard input and standard output streams (`stdin`/`stdout`).
 2. Client-Server Interaction Model: Demonstrates programmatic service consumption. The server daemon on port 30000 listens for an incoming connection, evaluates incoming stream data against an expected credential format, and returns the next authentication token upon validation.
 3. Pipeline Data Streaming: Combining `cat` with `| nc` eliminates manual keystroke delays, piping file contents directly into the established network transport layer.
+
+---
+
+## Level 15 to Level 16: Encrypted Socket Communication over TLS (openssl s_client)
+
+Objective: Submit the current level's password to a daemon on `localhost` port `30001` that uses SSL/TLS encryption to receive the password for Bandit Level 16.
+
+Commands:
+# Connect directly via OpenSSL's generic TLS client wrapper:
+openssl s_client -connect localhost:30001
+
+# Alternative clean stream submission (ignoring SSL handshake noise):
+openssl s_client -quiet -connect localhost:30001 < /etc/bandit_pass/bandit15
+
+Core Concepts Learned:
+1. Transport Layer Security (TLS/SSL): Cleartext TCP utilities like Netcat fail when interacting with endpoints requiring cryptographic handshakes, cipher-suite negotiation, and certificate exchange.
+2. OpenSSL Diagnostic Client (`openssl s_client`): A diagnostic tool for establishing raw encrypted streams to arbitrary TLS-wrapped network services.
+3. Suppressing Handshake Overhead (`-quiet`): The `-quiet` switch silences certificate verification details, session parameters, and TLS handshake output, piping standard input and output cleanly across the encrypted tunnel.
