@@ -283,3 +283,21 @@ Core Concepts Learned:
 1. Port Range Scanning (`nmap -p`): Demonstrates targeted reconnaissance across a closed port window on the loopback interface (`127.0.0.1`), locating listening sockets without scanning all 65,535 ports.
 2. Service Fingerprinting (`nmap -sV`): Differentiates simple dummy or echo listeners from daemons expecting structured TLS handshakes.
 3. Keyfile Lifecycle & Permission Boundaries: Reinforces the OpenSSH requirement for strict identity key permissions (`chmod 600`) before allowing programmatic asymmetric key exchange.
+
+---
+
+## Level 17 to Level 18: File Modification & Delta Analysis (diff)
+
+Objective: Identify the single modified password line between `passwords.old` and `passwords.new` in the home directory.
+
+Commands:
+# Standard line-by-line delta comparison:
+diff passwords.old passwords.new
+
+# Alternative side-by-side comparison suppressing identical lines:
+diff -y --suppress-common-lines passwords.old passwords.new
+
+Core Concepts Learned:
+1. Differential File Analysis (`diff`): Uses Myers' diff algorithm (shortest edit script) to compute the minimal sequence of insertions, deletions, and alterations between two text files.
+2. Standard Unix Diff Notation: Output headers like `<` designate records unique to the source file (`passwords.old`), while `>` identifies newly added or altered records in the destination file (`passwords.new`).
+3. Configuration Integrity & Audit Triage: File delta inspection is fundamental in incident response and version auditing, isolating unauthorized configuration mutations or injected lines without manual manual review.
