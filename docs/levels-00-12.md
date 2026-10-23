@@ -301,3 +301,25 @@ Core Concepts Learned:
 1. Differential File Analysis (`diff`): Uses Myers' diff algorithm (shortest edit script) to compute the minimal sequence of insertions, deletions, and alterations between two text files.
 2. Standard Unix Diff Notation: Output headers like `<` designate records unique to the source file (`passwords.old`), while `>` identifies newly added or altered records in the destination file (`passwords.new`).
 3. Configuration Integrity & Audit Triage: File delta inspection is fundamental in incident response and version auditing, isolating unauthorized configuration mutations or injected lines without manual manual review.
+
+---
+
+## Level 18 to Level 19: Bypassing Restricted Shell Sessions & Non-Interactive SSH (ssh commands)
+
+Objective: Retrieve the password stored in `readme` in the home directory of `bandit18`, despite the `.bashrc` startup script terminating interactive login shells upon connection.
+
+Commands:
+# 1. Execute remote command directly without invoking interactive shell hooks:
+ssh bandit18@bandit.labs.overthewire.org -p 2220 "cat readme"
+
+# Alternative bypass techniques:
+# Bypass default profile scripts by invoking an alternate shell directly:
+ssh bandit18@bandit.labs.overthewire.org -p 2220 "/bin/sh"
+
+# Force pseudo-terminal allocation with command invocation:
+ssh -t bandit18@bandit.labs.overthewire.org -p 2220 "cat readme"
+
+Core Concepts Learned:
+1. Shell Initialization Lifecycle: Interactive login shells execute system and user profile scripts (`/etc/profile`, `~/.bash_profile`, `~/.bashrc`). Modifying these startup dotfiles to invoke `exit` prevents persistent interactive terminal sessions.
+2. Non-Interactive Command Dispatch (`ssh host "command"`): Passing a command string as trailing arguments to OpenSSH dispatches the command directly through the user's login shell in non-interactive mode or direct exec, bypassing interactive profile traps.
+3. Restricted Shell Escapes: In systems administration and CTFs, breaking out of enforced shell wrappers or misconfigured dotfile exits is a standard privilege validation technique.
